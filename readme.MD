@@ -47,7 +47,7 @@ Lembre-se de seguir o código de conduta e de manter o repositório atualizado.
 
 ## Autor
 
-- [Leonardo Oliveira](https://github.com/leonardo-oliveira)
+- [Leonardo Oliveira](https://github.com/PedroLeoo07)
 
 ## Licença
 
