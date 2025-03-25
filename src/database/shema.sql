@@ -1,3 +1,6 @@
+CREATE DATABASE ingressos;
+\c ingressos;
+
 CREATE TABLE tickets (
    id SERIAL PRIMARY KEY,
    evento VARCHAR(255),
@@ -15,7 +18,7 @@ INSERT INTO tickets (evento, local, data_evento, categaoria, preco, quantidade_d
     ('Show Banda som e Louvor', 'Quadrangular Valinhos', '12/10/2025', 'Camarote', 500, 1400),
     ('Show Projeto Sola', 'Quadrangular Valinhos', '19/10/2025', 'Arquibancada', 80, 7000);
 
-    
+
 
 CREATE TABLE venda (
     id SERIAL PRIMARY KEY,

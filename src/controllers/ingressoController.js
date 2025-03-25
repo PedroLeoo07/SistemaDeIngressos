@@ -46,48 +46,36 @@ const createTicket = async (req, res) => {
     }
 };
 
-const realizarVenda = async (req, res) => {
+const createVenda = async (req, res) => {
     try {
         const { id, quantidade } = req.body;
-        const ingresso = await ingressoModel.getTicketById(id);
-
-        if (!ingresso) {
-            return res.status(404).json({ message: "Ingresso não encontrado." });
+        const newVenda = await ingressoModel.createVenda(id, quantidade);
+        if (newVenda.error) {
+            return res.status(400).json({ message: newVenda.error });
         }
-
-        if (ingresso.quantidade_disponivel < quantidade) {
-            return res.status(400).json({ message: "Ingressos insuficientes para a venda." });
-        }
-
-        ingresso.quantidade_disponivel -= quantidade;
-        const updateIngresso = await ingressoModel.updateTicket(id, ingresso.evento, ingresso.local, ingresso.data_evento, ingresso.categoria, ingresso.preco, ingresso.quantidade_disponivel);
-
-        res.status(200).json({
-            mensagem: "Compra realizada com sucesso!",
-            evento: updateIngresso.evento,
-            categoria: updateIngresso.categoria,
-            quantidade_comprada: quantidade,
-            quantidade_restante: updateIngresso.quantidade_disponivel
-        });
+        res.status(201).json(newVenda);
     } catch (error) {
-        console.error("Erro ao realizar venda:", error);
-        res.status(500).json({ message: "Erro ao realizar venda." });
+        console.log(error);
+        if (error.code === "23505") { 
+            return res.status(400).json({ message: "Ingresso já comprado." });
+        }
+            res.status(500).json({ message: "Erro ao comprar ingresso." });
     }
 };
-
 
 const updateTicket = async (req, res) => {
     try {
-        const { evento, local, data_evento, categaoria, preco, quantidade_disponivel } = req.body;
-        const updatedTicket = await ingressoModel.updateTicket(req.params.id, evento, local, data_evento, categaoria, preco, quantidade_disponivel);
-        if (!updatedTicket) {
-            return res.status(404).json({ message: "Ticket não encontrado." });
+        const { evento, local, data_evento, categoria, preco, quantidade_disponivel } = req.body;
+        const updateTicket = await ingressoModel.updateTicket(req.params.id, evento, local, data_evento, categoria, preco, quantidade_disponivel);
+        if (!updateTicket) {
+            return res.status(404).json({ message: "Ingresso não encontrado." });
         }
-        res.json(updatedTicket);
+        res.json(updateTicket)
     } catch (error) {
-        res.status(500).json({ message: "Erro ao atualizar ticket." });
+        res.status(500).json({ message: "Erro ao atualizar Ingresso." });
     }
 };
+
 
 const deleteTicket = async (req, res) => {
     try {
@@ -110,4 +98,4 @@ const getTicketById = async (req, res) => {
     }
 };
 
-module.exports = { getAllTickets, getTicket, createTicket, updateTicket, deleteTicket, getTicketById, realizarVenda };
+module.exports = { getAllTickets, getTicket, createTicket, updateTicket, deleteTicket, getTicketById, createVenda };
